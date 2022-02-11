@@ -23,6 +23,7 @@ class BTree {
 
 public:
 
+	Node* virtualNodes[2];
 	Node* root; //ROOT IS A POINTER TO A NODE OBJECT
 	BTree() {
 		root = NULL;
@@ -33,7 +34,7 @@ public:
 
 
 
-void BTree :: AddNode(int key) {
+void BTree::AddNode(int key) {
 
 	Node* newNode = new Node(key);
 
@@ -47,7 +48,7 @@ void BTree :: AddNode(int key) {
 		Node* parent;
 
 		while (true) {
-			
+
 			parent = focusNode;
 			if (key < focusNode->_key) {
 
@@ -60,16 +61,34 @@ void BTree :: AddNode(int key) {
 
 			}
 			else {
-					focusNode = focusNode->rightChild;
+				focusNode = focusNode->rightChild;
 
-					if (focusNode == NULL) {
-						parent->rightChild = newNode;
-						return;
-					}
+				if (focusNode == NULL) {
+					parent->rightChild = newNode;
+					return;
 				}
+			}
+
+			//Possible Node split
+			if (parent != root) {
+
+				//iterate to the leafNode. Make leafNode the focusNode. Once at the leafNode:
+				virtualNodes[0]->_key = focusNode->_key;
+				virtualNodes[1]->_key = key;
+
+				if (virtualNodes[0]->_key < virtualNodes[1]->_key) {
+
+					//propogate the virtual node up one node.
+
+				}
+
+				
+				
+
 			}
 		}
 	}
+}
 
 
 void BTree::inOrderTraversal(Node* focusNode) {
@@ -77,11 +96,11 @@ void BTree::inOrderTraversal(Node* focusNode) {
 	if (focusNode != NULL) {
 		inOrderTraversal(focusNode->leftChild);   //keep traversing the left node to the left child till it hits null
 
-		cout <<focusNode->_key<<"->";   //visit the currently focused on node because we know that will be the next value of the lowest value
+		cout << focusNode->_key << "->";   //visit the currently focused on node because we know that will be the next value of the lowest value
 
 		inOrderTraversal(focusNode->rightChild); //traverse right child. INORDER fulfilled 
 	}
-	
+
 }
 
 int main() {
@@ -89,7 +108,7 @@ int main() {
 	BTree* theTree = new BTree();
 
 	theTree->AddNode(1);
-    theTree->AddNode(2);
+	theTree->AddNode(2);
 	theTree->AddNode(3);
 	theTree->AddNode(6);
 	theTree->AddNode(5);
@@ -97,6 +116,6 @@ int main() {
 	theTree->inOrderTraversal(theTree->root);
 
 	delete theTree;
-	
+
 	cin.get();
 }
