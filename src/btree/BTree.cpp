@@ -15,6 +15,11 @@ bool Node::check_leaf() {
 	else return false;
 }
 
+
+bool BTree::operator == ( BTree const& other ) const {
+	return false;
+}
+
 void BTree::AddKey(int key) {
 
 	Node* newNode = new Node(key);

@@ -40,4 +40,5 @@ public:
 
 	void AddKey(int key);
 	void inOrderTraversal(Node* focusNode);
+	bool operator == ( BTree const& other ) const;
 };
