@@ -73,7 +73,7 @@ SCENARIO( "We add new keys to the B-Tree", "[btree][insert]")
 {
     GIVEN( "An empty B-Tree" )
     {
-        auto const key_val = 3u;
+        auto const key_val = 3;
         BTree tree;
 
         WHEN( "We insert a single key" )
@@ -92,12 +92,12 @@ SCENARIO( "We add new keys to the B-Tree", "[btree][insert]")
     
     GIVEN( "A B-Tree with a single key" )
     {
-        auto const original_key = 3u;
-        BTree tree( original_key );
+        auto const original_key = 3;
+        BTree tree{ new Node( original_key ) };
 
         WHEN( "We insert a single key that is larger than original key" )
         {
-            auto const new_key = original_key + 2u;
+            auto const new_key = original_key + 2;
             tree.AddKey( new_key );
 
             THEN( "The tree contains a single node with the original_key before the new_key" )
@@ -105,7 +105,7 @@ SCENARIO( "We add new keys to the B-Tree", "[btree][insert]")
                 // [original_key, new_key, ?]
                 BTree const expected_solution{ new Node( original_key ) };
                 CHECK( tree.root != NULL );
-                expected_solution.root->children[ 1 ] = new_key;
+                expected_solution.root->keys[ 1 ] = new_key;
 
                 REQUIRE( tree == expected_solution );
             }
@@ -113,7 +113,7 @@ SCENARIO( "We add new keys to the B-Tree", "[btree][insert]")
 
         WHEN( "We insert a single key that is less than original key" )
         {
-            auto const new_key = original_key - 2u;
+            auto const new_key = original_key - 2;
             tree.AddKey( new_key );
 
             THEN( "The tree contains a single node with the original_key before the new_key" )
@@ -121,7 +121,7 @@ SCENARIO( "We add new keys to the B-Tree", "[btree][insert]")
                 // [new_key, original_key, ?]
                 BTree const expected_solution{ new Node( new_key ) };
                 CHECK( tree.root != NULL );
-                expected_solution.root->children[ 1 ] = original_key;
+                expected_solution.root->keys[ 1 ] = original_key;
 
                 REQUIRE( tree == expected_solution );
             }
@@ -136,7 +136,7 @@ SCENARIO( "We add new keys to the B-Tree", "[btree][insert]")
                 // [original_key, original_key, ?]
                 BTree const expected_solution{ new Node( original_key ) };
                 CHECK( tree.root != NULL );
-                expected_solution.root->children[ 1 ] = original_key;
+                expected_solution.root->keys[ 1 ] = original_key;
 
                 REQUIRE( tree == expected_solution );
             }
