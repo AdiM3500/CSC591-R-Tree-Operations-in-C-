@@ -1,0 +1,1 @@
+/usr/bin/c++       -fopenmp     -march=native     -mavx     -Wall     -g     -ansi     -Wextra     -Wdisabled-optimization     -Wunsafe-loop-optimizations     -Wpedantic     -Wshadow   CMakeFiles/unit_tests.dir/unitTests.cpp.o CMakeFiles/unit_tests.dir/btree/btree-tests.cpp.o  -o unit_tests  ../src/btree/libbtree.a -lgcov 

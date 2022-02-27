@@ -1,0 +1,11 @@
+/mnt/c/Users/aadit/Documents/CSC595-A1/build/CMakeFiles/rebuild_cache.dir
+/mnt/c/Users/aadit/Documents/CSC595-A1/build/CMakeFiles/edit_cache.dir
+/mnt/c/Users/aadit/Documents/CSC595-A1/build/src/CMakeFiles/rebuild_cache.dir
+/mnt/c/Users/aadit/Documents/CSC595-A1/build/src/CMakeFiles/edit_cache.dir
+/mnt/c/Users/aadit/Documents/CSC595-A1/build/src/CMakeFiles/a1.dir
+/mnt/c/Users/aadit/Documents/CSC595-A1/build/src/btree/CMakeFiles/rebuild_cache.dir
+/mnt/c/Users/aadit/Documents/CSC595-A1/build/src/btree/CMakeFiles/edit_cache.dir
+/mnt/c/Users/aadit/Documents/CSC595-A1/build/src/btree/CMakeFiles/btree.dir
+/mnt/c/Users/aadit/Documents/CSC595-A1/build/test/CMakeFiles/rebuild_cache.dir
+/mnt/c/Users/aadit/Documents/CSC595-A1/build/test/CMakeFiles/edit_cache.dir
+/mnt/c/Users/aadit/Documents/CSC595-A1/build/test/CMakeFiles/unit_tests.dir
