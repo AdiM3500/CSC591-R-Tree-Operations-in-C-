@@ -17,6 +17,28 @@ bool Node::check_leaf() {
 
 
 bool BTree::operator == ( BTree const& other ) const {
+
+
+	if(root == NULL){
+
+		if(other.root == NULL) return true;
+
+		
+	} 
+
+	else {
+
+		for(int i = 0; i < root->n; i++){
+			
+			if(root->children[i] != other.root->children[i]){
+
+						return false;
+			}
+
+			else return true;
+		}
+	}
+
 	return false;
 }
 

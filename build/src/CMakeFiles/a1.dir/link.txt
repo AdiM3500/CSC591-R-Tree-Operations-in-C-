@@ -1,0 +1,1 @@
+/usr/bin/c++       -fopenmp     -march=native     -mavx     -Wall     -g     -ansi     -Wextra     -Wdisabled-optimization     -Wunsafe-loop-optimizations     -Wpedantic     -Wshadow   CMakeFiles/a1.dir/main.cpp.o  -o ../a1  btree/libbtree.a 
