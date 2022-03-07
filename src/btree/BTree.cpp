@@ -16,9 +16,9 @@ bool Node::check_leaf() {
 }
 
 
-bool BTree::operator == ( BTree  other ) const {
+bool BTree::operator == ( BTree const& other ) const {
 
-//if current object's root is empty, return true if other's root is empty as well
+
 	if(root == NULL){
 
 		if(other.root == NULL) return true;
@@ -28,9 +28,15 @@ bool BTree::operator == ( BTree  other ) const {
 
 	else {
 
-		bool res = other.inOrderComparisonTraversal(other.root,root);   //returns true if every key in 'other' is present in current object
+		for(int i = 0; i < root->n; i++){
+			
+			if(root->children[i] != other.root->children[i]){
 
-		return res;
+						return false;
+			}
+
+			else return true;
+		}
 	}
 
 	return false;
@@ -135,7 +141,6 @@ void BTree::AddKey(int key) {
 }
 
 
-
 void BTree::inOrderTraversal(Node* focusNode) {
 
 	if (focusNode != NULL) {
@@ -148,25 +153,4 @@ void BTree::inOrderTraversal(Node* focusNode) {
 		inOrderTraversal(focusNode->children[1]); //traverse right child. INORDER fulfilled 
 	}
 
-}
-
-
-//similar to inOrderTraversal but we compare each element of 2 b trees
-bool BTree::inOrderComparisonTraversal(Node* focusNode1, Node* focusNode2) {
-
-	if(focusNode1 != NULL){
-
-		inOrderComparisonTraversal(focusNode1->children[0], focusNode2->children[0]);
-
-		for (int i = 0; i < focusNode1->n; i++){
-
-			if(focusNode1->keys[i] != focusNode2->keys[i])
-			return false;
-		}
-
-	   inOrderComparisonTraversal(focusNode1->children[1], focusNode2->children[1]);
-
-	}
-
-	return true;
 }

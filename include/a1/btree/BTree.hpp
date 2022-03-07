@@ -41,5 +41,5 @@ public:
 	void AddKey(int key);
 	void inOrderTraversal(Node* focusNode);
 	bool inOrderComparisonTraversal (Node* focusNode1, Node* focusNode2);		//function to traverse the elements of 2 b trees and compare each key
-	bool operator == ( BTree other ) const;
+	bool operator == ( BTree const& other ) const;
 };
