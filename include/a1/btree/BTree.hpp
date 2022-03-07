@@ -18,12 +18,25 @@ public:
 	int n = 0;          //var to keep track of the number of keys
 
 
+	/**
+	 * Create a new node with a single key and no children
+	 */
 	Node(int key) {
 		keys[0] = key;
 		children[0] = NULL;
 		children[1] = NULL;
 		children[2] = NULL;
 		n += 1;							//every time you add a new node with a key, number of keys increases by one
+	}
+
+	/**
+	 * Create a new node with no children from a list of keys
+	 */
+	Node( std::vector< key_t > keys_to_insert )
+	{
+		std::copy( keys_to_insert.cbegin(), keys_to_insert.cend(), keys );
+		std::fill( children, children + num_keys + 1, static_cast< Node * >( NULL ) );
+		n = keys_to_insert.size();
 	}
 
 	bool check_leaf();     //function to check if node is a leaf node.
