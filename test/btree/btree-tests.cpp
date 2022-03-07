@@ -229,3 +229,10 @@ SCENARIO( "We add new keys to the B-Tree", "[btree][insert]")
 } 
 
 
+// Case 1: Insertion into empty tree
+// Case 2: Insertion into tree with one non-full node
+// Case 3: Insertion into tree with one full node
+// Case 4: Insertion into non-root non-full leaf node
+// Case 5: Insertion into non-root full leaf node
+// Case 6: Insertion causes root split above
+// Case 7: Insertion propagates up two levels, raising tree from height 2 to height 3
