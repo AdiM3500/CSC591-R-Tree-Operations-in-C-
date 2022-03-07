@@ -185,6 +185,7 @@ SCENARIO( "We add new keys to the B-Tree", "[btree][insert]")
     }
 
 //A full right child, but capacity exists in the root and the left child
+    /*
     GIVEN( "A B-Tree containing 4 keys, we add a 5th key")
     {   
         auto const original_key_1 = 3;
@@ -207,6 +208,7 @@ SCENARIO( "We add new keys to the B-Tree", "[btree][insert]")
             auto const new_key = original_key_4 + 2;
             tree.AddKey( new_key );
 
+            
             THEN( "The current leaf node size from 2 to 3")
             {
                
@@ -223,6 +225,7 @@ SCENARIO( "We add new keys to the B-Tree", "[btree][insert]")
             }
         }
     }
+    */
 } 
 
 
