@@ -22,6 +22,14 @@ std::optional< Node * > BTree::find( key_t key )
 }
 
 
+key_list_t BTree::find( key_t lower_bound, key_t upper_bound )
+{
+	auto const keys = key_list_t{};
+
+	return keys;
+}
+
+
 bool BTree::operator == ( BTree  other ) const {
 
 //if current object's root is empty, return true if other's root is empty as well
