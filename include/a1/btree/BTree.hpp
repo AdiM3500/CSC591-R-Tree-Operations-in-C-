@@ -2,7 +2,10 @@
 #include <algorithm>
 #include<iterator>
 #include <cmath>
+#include <optional>
 
+
+using key_t = int;
 
 class Node {
 
@@ -37,6 +40,12 @@ public:
 
 	Node* root = NULL; //ROOT IS A POINTER TO A NODE OBJECT
 
+
+	/**
+	 * Given a key, retrieves a pointer to the node containing that key if it exists.
+	 * Otherwise, std::nullopt is returned.
+	 */
+	std::optional< Node * > find( key_t key );
 
 	void AddKey(int key);
 	void insertInNonFullNode(Node* focusNode, int key);				//function to insert a key into a node when it is non-full.
