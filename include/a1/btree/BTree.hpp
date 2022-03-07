@@ -39,7 +39,9 @@ public:
 
 
 	void AddKey(int key);
+	void insertInNonFullNode(Node* focusNode, int key);				//function to insert a key into a node when it is non-full.
 	void inOrderTraversal(Node* focusNode);
 	bool inOrderComparisonTraversal (Node* focusNode1, Node* focusNode2);		//function to traverse the elements of 2 b trees and compare each key
-	bool operator == ( BTree const& other ) const;
+	bool operator == ( BTree other ) const;
+	int  findMid(Node* focusNode, int virtualNode[], int key);    //THIS DOES NOT WORK. VirtualNode[] doesn't work with std::sort when passed as an argument to a function
 };
