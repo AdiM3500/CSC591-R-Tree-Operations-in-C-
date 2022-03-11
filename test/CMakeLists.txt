@@ -1,10 +1,12 @@
 add_executable(
   unit_tests
     unitTests.cpp
+    btree/btree-lookup-tests.cpp
+    btree/btree-range-tests.cpp
     btree/btree-tests.cpp
 )
 
-target_link_libraries( 
+target_link_libraries(
   unit_tests
     btree
     gcov

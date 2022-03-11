@@ -16,6 +16,19 @@ bool Node::check_leaf() {
 	else return false;
 }
 
+std::optional< Node * > BTree::find( key_t key )
+{
+	return std::nullopt;
+}
+
+
+key_list_t BTree::find( key_t lower_bound, key_t upper_bound )
+{
+	auto const keys = key_list_t{};
+
+	return keys;
+}
+
 
 bool BTree::operator == ( BTree  other ) const {
 
