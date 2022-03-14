@@ -4,8 +4,85 @@
 #include <algorithm>
 #include<iterator>
 #include <cmath>
-#include <bits/stdc++.h>
 
+Node* BTree::lookup(Node* focusNode, key_t key)
+{
+
+
+//if tree contains only one node
+if (focusNode->check_leaf()) {
+
+	for (int i = 0 ; i < focusNode->n; i++){
+
+		if(key == focusNode->keys[i]) {
+			std::cout <<"key was found at root!"<<std::endl;
+			return focusNode;
+		}
+
+		
+		
+	}
+}
+
+/*
+while(true){
+
+
+
+
+for (int i = 0; i <focusNode->n; i++){
+
+				//if key is found in the focusNode, return the Node containing the key
+			if(key == focusNode->keys[i])
+			return focusNode;
+
+			if(key < focusNode->keys[i]){
+
+				focusNode = focusNode->children[i];
+			}
+
+			if((i == (focusNode->n -1)) && (key > focusNode->keys[i])){
+
+				focusNode = focusNode->children[i+1];
+			}
+		} 
+} */
+		
+		
+}
+
+std::optional< Node * > BTree::find( key_t key )
+{
+
+	if (root == NULL)
+	return std::nullopt;
+
+	Node* focusNode = root;
+
+	//tree only contains one node
+	if(focusNode->check_leaf()){
+
+		for(int i = 0; i < focusNode->n; i++){
+
+			if(key == focusNode->keys[i])
+			return focusNode;          //return the root node if key is present in it
+		}
+	}
+	
+
+
+	std::cout <<"null opt returned"<<std::endl;
+	return std::nullopt;     //no-value is being returned?
+}
+
+
+key_list_t BTree::find( key_t lower_bound, key_t upper_bound )
+{	
+
+	auto keyList = key_list_t{};
+	inOrderRangeTraversal(root, lower_bound, upper_bound);
+	return listOfKeys;
+}
 
 //if node has no children, then node is a leaf
 bool Node::check_leaf() {
@@ -14,19 +91,6 @@ bool Node::check_leaf() {
 		return true;
 
 	else return false;
-}
-
-std::optional< Node * > BTree::find( key_t key )
-{
-	return std::nullopt;
-}
-
-
-key_list_t BTree::find( key_t lower_bound, key_t upper_bound )
-{
-	auto const keys = key_list_t{};
-
-	return keys;
 }
 
 
@@ -60,12 +124,82 @@ void BTree::insertInNonFullNode(Node* focusNode, int key){
 }
 
 
-//THIS DOES NOT WORK. VirtualNode[] doesn't work with std::sort when passed as an argument to a function
-/*
-int BTree::findMid(Node* focusNode, int virtualNode[], int key){
+Node* BTree::insertInFullNode(Node* parentNode, int key){
 
-						int virtualNode[focusNode->num_keys];
-						std::copy(std::begin(focusNode->keys), std::end(focusNode->keys), std::begin(virtualNode));
+		int parentVirtualNode[parentNode->num_keys + 1];
+
+	
+
+		int mid = findMid(parentNode, parentVirtualNode, key);
+
+		std::cout <<"-----------------------------------------"<<std::endl;
+
+		
+		std::cout <<parentNode->children[2]->keys[0]<<std::endl;
+		std::cout <<parentNode->children[2]->keys[1] <<std::endl;
+
+
+
+		//need to split parentNode first.
+	//	std::copy(parentVirtualNode,parentVirtualNode,parentNode->keys);
+
+	
+
+		if(parentNode == root){
+			
+			
+			Node *x = new Node (parentVirtualNode[mid-1]);
+
+			
+			Node *splitLeft = new Node(parentVirtualNode[0]);
+			Node *splitRight = new Node(parentVirtualNode[mid]);
+
+			splitLeft->children[0] = parentNode->children[0];
+			splitLeft->children[1] = parentNode->children[1];
+
+			splitRight->children[0] = new Node(parentNode->children[2]->keys[0]);
+			splitRight->children[1] = new Node(parentNode->children[2]->keys[1]);
+
+
+
+
+			x->children[0] = splitLeft;
+			x->children[1] = splitRight;
+
+			
+			std::cout <<"new root? : "<<x->keys[0]<<std::endl;
+			std::cout <<"root's left child: " <<x->children[0]->keys[0]<<std::endl;
+			std::cout <<"root's left child left child: "<<x->children[0]->children[0]->keys[0]<<std::endl;
+			std::cout <<"root's left child right child: "<<x->children[0]->children[1]->keys[0]<<std::endl;
+			std::cout <<std::endl;
+			std::cout <<"root's right child: "<<x->children[1]->keys[0]<<std::endl;
+			std::cout <<"root's right child's left child: "<<x->children[1]->children[0]->keys[0]<<std::endl;
+			std::cout <<"root's right child's left child: "<<x->children[1]->children[1]->keys[0]<<std::endl;
+
+			return x;
+
+		}
+
+		
+
+		
+		
+
+		
+		
+
+
+		
+		
+		
+	
+}
+//THIS DOES NOT WORK. VirtualNode[] doesn't work with std::sort when passed as an argument to a function
+
+int BTree::findMid(Node* focusNode, int virtualNode [], int key){
+
+					//	int virtualNode[focusNode->num_keys];
+						std::copy(std::begin(focusNode->keys), std::end(focusNode->keys), virtualNode);
 
 						//add the overflown key
 						virtualNode[focusNode->num_keys] = key;
@@ -75,8 +209,10 @@ int BTree::findMid(Node* focusNode, int virtualNode[], int key){
 
 						//display the contents of the virtual node
 						std::cout << "Node with overflown elements are:" << std::endl;
-						for (auto e : virtualNode)
-							std::cout << e << ' ';
+
+
+						for (int e = 0; e <= focusNode->num_keys; e++)
+							std::cout << virtualNode[e] << " to " ;
 						std::cout << std::endl;
 
 
@@ -89,7 +225,7 @@ int BTree::findMid(Node* focusNode, int virtualNode[], int key){
 						return mid;
 
 }
-*/
+
 
 
 void BTree::AddKey(int key) {
@@ -131,33 +267,17 @@ void BTree::AddKey(int key) {
 					//splitting the root
 					if (focusNode == root) {
 
+						
 
-
+							
 						/*this is not a Node object. It is an array of integers that stores the keys of the focusNode, along with the overflown key as well.
 						Used for finding the middle element which needs to be pushed up to the new root. */
 						int virtualNode[focusNode->num_keys + 1];
 
 						//copy focusNode's keys to virtualNode
-						std::copy(std::begin(focusNode->keys), std::end(focusNode->keys), std::begin(virtualNode));
-
-						//add the overflown key
-						virtualNode[focusNode->num_keys] = key;
-
-						//sort virtualNode
-						std::sort(virtualNode, (virtualNode + focusNode->num_keys + 1));
-
-						//display the contents of the virtual node
-						std::cout << "Node with overflown elements are:" << std::endl;
-						for (auto e : virtualNode)
-							std::cout << e << ' ';
-						std::cout << std::endl;
-
-
-						//pick the middle key
-						int mid = ceil(float(focusNode->num_keys + 1) / 2);
-						std::cout << "middle element is: ";
-						std::cout << virtualNode[mid - 1] << std::endl;
-
+						int mid = findMid (focusNode, virtualNode, key);
+						
+					
 						//---------------------------------------------------------------------------------------------------------------------------------
 						//Make a new node with the middle key as the first key. This is how it is being pushed up for the root.
 						Node* x = new Node(virtualNode[mid - 1]);
@@ -212,31 +332,14 @@ void BTree::AddKey(int key) {
 						Used for finding the middle element which needs to be pushed up to the new root. */
 										int virtualNode[focusNode->num_keys + 1];
 
-						//copy focusNode's keys to virtualNode
-										std::copy(std::begin(focusNode->keys), std::end(focusNode->keys), std::begin(virtualNode));
 
-						//add the overflown key
-										virtualNode[focusNode->num_keys] = key;
-
-						//sort virtualNode
-										std::sort(virtualNode, (virtualNode + focusNode->num_keys + 1));
-
-						//display the contents of the virtual node
-										std::cout << "Node with overflown elements are:" << std::endl;
-										for (auto e : virtualNode)
-										std::cout << e << ' ';
-										std::cout << std::endl;
-
-
-						//pick the middle key
-										int mid = ceil(float(focusNode->num_keys + 1) / 2);
-										std::cout << "middle element is: ";
-										std::cout << virtualNode[mid - 1] << std::endl;
+										int mid = findMid(focusNode,virtualNode,key);
 
 								//--------------------------------------------------------------------------------------------------------------------	
 										//splitleft
 										
 										if(parent->n < parent->num_keys) insertInNonFullNode(parent, virtualNode[mid-1]); //propogate the key up to the non-full parent
+										else std::cout <<"internal node too big as well";
 										
 										//for displaying purposes
 										 for (int j = 0; j <parent->n; j++){
@@ -290,38 +393,20 @@ void BTree::AddKey(int key) {
 
 										else {
 											std::cout <<"node full!";
-										/*this is not a Node object. It is an array of integers that stores the keys of the focusNode, along with the overflown key as well.
-						Used for finding the middle element which needs to be pushed up to the new root. */
+										
 										int virtualNode[focusNode->num_keys + 1];
 
-						//copy focusNode's keys to virtualNode
-										std::copy(std::begin(focusNode->keys), std::end(focusNode->keys), std::begin(virtualNode));
-
-						//add the overflown key
-										virtualNode[focusNode->num_keys] = key;
-
-						//sort virtualNode
-										std::sort(virtualNode, (virtualNode + focusNode->num_keys + 1));
-
-						//display the contents of the virtual node
-										std::cout << "Node with overflown elements are:" << std::endl;
-										for (auto e : virtualNode)
-										std::cout << e << ' ';
-										std::cout << std::endl;
-
-
-						//pick the middle key
-										int mid = ceil(float(focusNode->num_keys + 1) / 2);
-										std::cout << "middle element is: ";
-										std::cout << virtualNode[mid - 1] << std::endl;
+										int mid = findMid(focusNode, virtualNode, key);
 
 								//--------------------------------------------------------------------------------------------------------------------	
 										//splitRight
 										
-										if(parent->n < parent->num_keys) insertInNonFullNode(parent, virtualNode[mid-1]);
-										
-										//for displaying purposes only
-										 for (int j = 0; j <parent->n; j++){
+										if(parent->n < parent->num_keys) {
+											
+											insertInNonFullNode(parent, virtualNode[mid-1]);
+
+											//displaying purporses only
+											for (int j = 0; j <parent->n; j++){
 											 std::cout <<parent->keys[j]<<std::endl;
 										 }
 										
@@ -337,6 +422,26 @@ void BTree::AddKey(int key) {
 											
 											std::cout <<"parent children[1] key size: "<<parent->children[1]->n<<std::endl;
 											std::cout <<"parent children[1] has key: "<<parent->children[1]->keys[0]<<std:: endl;
+										} 
+										
+										else {
+
+												std::cout <<"[biggest] parent node is full!";
+
+
+														parent->children[2] = new Node(virtualNode[0]);
+														parent->children[2]->keys[1] = virtualNode[mid];
+
+												Node* x = insertInFullNode(parent, virtualNode[mid-1]);
+
+												root = x;
+
+
+											
+												
+
+											}
+										
 										}
 
 										return;
@@ -360,13 +465,14 @@ void BTree::AddKey(int key) {
 //InorderTraversal has been modified to accomodate 3 children now. Have taken inspiration for just this code from: https://www.geeksforgeeks.org/insert-operation-in-b-tree/
 void BTree::inOrderTraversal(Node* focusNode) {
 
+	
 	if (focusNode != NULL) {
 		
 		int i;
 		for ( i = 0; i < focusNode->n; i++) {
 				inOrderTraversal(focusNode->children[i]);
 			    std::cout << focusNode->keys[i] << "->";   //visit the currently focused on node because we know that will be the next value of the lowest value
-
+			
 
 		}
 	
@@ -376,40 +482,56 @@ void BTree::inOrderTraversal(Node* focusNode) {
 
 } 
 
-/*
-void BTree::inOrderTraversal(Node* focusNode){
-			int i;
-	for (i = 0; i < focusNode->n; i++){
 
-		if (focusNode->check_leaf() == false)
-				inOrderTraversal(focusNode->children[i]);
-				std::cout << " "<<focusNode->keys[i];
-					
-	}
+void BTree::inOrderRangeTraversal(Node* focusNode, key_t lower, key_t upper) {
 
-	if (focusNode->check_leaf() == false){
+	
+	if (focusNode != NULL) {
+		
+		int i;
+		for ( i = 0; i < focusNode->n; i++) {
+				inOrderRangeTraversal(focusNode->children[i], lower, upper);
+			//    std::cout << focusNode->keys[i] << "->";   //visit the currently focused on node because we know that will be the next value of the lowest value
 				
-				inOrderTraversal(focusNode->children[i]);
+				if(focusNode->keys[i] >= lower){
+					if(focusNode->keys[i] < upper)
+					listOfKeys.push_back(focusNode->keys[i]);
+				}
+
+		}
+	
+
+		inOrderRangeTraversal(focusNode->children[i], lower, upper);
 	}
-}
-*/
+
+} 
 
 //similar to inOrderTraversal but we compare each element of 2 b trees
+
+
 bool BTree::inOrderComparisonTraversal(Node* focusNode1, Node* focusNode2) {
 
 	if(focusNode1 != NULL){
 
-		inOrderComparisonTraversal(focusNode1->children[0], focusNode2->children[0]);
+	int i;
+		for ( i = 0; i < focusNode1->n; i++) {
+				inOrderComparisonTraversal(focusNode1->children[i], focusNode2->children[i]);
+			    
+				if(focusNode1->keys[i] != focusNode2->keys[i])
+					return false;
 
-		for (int i = 0; i < focusNode1->n; i++){
-
-			if(focusNode1->keys[i] != focusNode2->keys[i])
-			return false;
 		}
+	
 
-	   inOrderComparisonTraversal(focusNode1->children[1], focusNode2->children[1]);
+		inOrderComparisonTraversal(focusNode1->children[i], focusNode2->children[i]);
+		
 
 	}
 
 	return true;
+
 }
+
+
+
+

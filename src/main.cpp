@@ -12,7 +12,7 @@ int main() {
 	theTree.AddKey(3);
 	theTree.AddKey(1);
 	theTree.AddKey(11);
-	// theTree.AddKey(13);
+	 theTree.AddKey(13);
 	
 
 	std::cout << "B-Tree Traversal: ";

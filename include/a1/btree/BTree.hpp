@@ -56,11 +56,12 @@ public:
 
 	Node* root = NULL; //ROOT IS A POINTER TO A NODE OBJECT
 
-
+	key_list_t listOfKeys{};
 	/**
 	 * Given a key, retrieves a pointer to the node containing that key if it exists.
 	 * Otherwise, std::nullopt is returned.
 	 */
+
 	std::optional< Node * > find( key_t key );
 
 	/**
@@ -68,10 +69,14 @@ public:
 	 */
 	key_list_t find( key_t lower_bound, key_t upper_bound );
 
+	Node* lookup(Node* focusNode, key_t key);
+	void inOrderRangeTraversal (Node* focusNode, key_t lower, key_t upper);
 	void AddKey(int key);
 	void insertInNonFullNode(Node* focusNode, int key);				//function to insert a key into a node when it is non-full.
 	void inOrderTraversal(Node* focusNode);
 	bool inOrderComparisonTraversal (Node* focusNode1, Node* focusNode2);		//function to traverse the elements of 2 b trees and compare each key
 	bool operator == ( BTree other ) const;
 	int  findMid(Node* focusNode, int virtualNode[], int key);    //THIS DOES NOT WORK. VirtualNode[] doesn't work with std::sort when passed as an argument to a function
+	Node* insertInFullNode(Node* parentNode, int key);
+
 };

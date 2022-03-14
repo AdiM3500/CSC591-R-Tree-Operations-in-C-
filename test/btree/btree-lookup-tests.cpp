@@ -31,7 +31,7 @@ SCENARIO( "We perform a lookup on a tree with only one node", "[btree][root][loo
     GIVEN( "A B-Tree with a single node" )
     {
         auto const key_in_tree = 3;
-        auto tree = BTree{ new Node{ { 1, key_in_tree, 5 } } };
+        auto tree = BTree{ new Node{ { 1, key_in_tree } } };
 
         WHEN( "We lookup a key that is in the tree" )
         {
@@ -60,6 +60,35 @@ SCENARIO( "We perform a lookup on a tree with only one node", "[btree][root][loo
     }
 }
 
+SCENARIO("We perform a lookup on a tree with 4 nodes (root node, left child, middle child, right child)")
+{
+    GIVEN("A B-Tree with 4 nodes")
+    {
+        
+            //case 4:
+        auto tree = BTree{new Node{{3, 6}}};
+         auto const key_in_tree = 1;
+        tree.root->children[0] = new Node(key_in_tree);
+        tree.root->children[1] = new Node(5);
+        tree.root->children[2] = new Node(7);
+        WHEN("When we lookup a key that is in the left child")
+        {
+            
+            auto const actual_result = tree.find(1);
+
+            THEN("The left Node is returned")
+            {
+                auto const expected_result = tree.root->children[0];
+
+                REQUIRE(actual_result == expected_result);
+            }
+
+        }
+        
+
+
+    }
+}
 // case 4: search for a key in a left child
 // case 5: search for a key in a middle child
 // case 6: search for a key left then right
