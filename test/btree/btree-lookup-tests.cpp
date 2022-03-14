@@ -64,29 +64,38 @@ SCENARIO("We perform a lookup on a tree with 4 nodes (root node, left child, mid
 {
     GIVEN("A B-Tree with 4 nodes")
     {
-        
-            //case 4:
         auto tree = BTree{new Node{{3, 6}}};
-         auto const key_in_tree = 1;
+        auto const key_in_tree = 1;
         tree.root->children[0] = new Node(key_in_tree);
         tree.root->children[1] = new Node(5);
         tree.root->children[2] = new Node(7);
+
+        //case 4:
         WHEN("When we lookup a key that is in the left child")
         {
-            
-            auto const actual_result = tree.find(1);
+            auto const expected_result = tree.root->children[0];
 
             THEN("The left Node is returned")
             {
-                auto const expected_result = tree.root->children[0];
+                auto const actual_result = tree.find(1);
 
                 REQUIRE(actual_result == expected_result);
             }
 
         }
-        
 
+        //case 5:
+        WHEN("When we lookup a key that is in the middle child")
+        {
+            auto const expected_result = tree.root->children[1];
 
+            THEN("The left Node is returned")
+            {
+                auto const actual_result = tree.find(5);
+
+                REQUIRE(actual_result == expected_result);
+            }
+        }
     }
 }
 // case 4: search for a key in a left child
