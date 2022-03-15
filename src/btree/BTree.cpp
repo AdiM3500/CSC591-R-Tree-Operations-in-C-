@@ -5,52 +5,6 @@
 #include<iterator>
 #include <cmath>
 
-Node* BTree::lookup(Node* focusNode, key_t key)
-{
-
-
-//if tree contains only one node
-if (focusNode->check_leaf()) {
-
-	for (int i = 0 ; i < focusNode->n; i++){
-
-		if(key == focusNode->keys[i]) {
-			std::cout <<"key was found at root!"<<std::endl;
-			return focusNode;
-		}
-
-		
-		
-	}
-}
-
-/*
-while(true){
-
-
-
-
-for (int i = 0; i <focusNode->n; i++){
-
-				//if key is found in the focusNode, return the Node containing the key
-			if(key == focusNode->keys[i])
-			return focusNode;
-
-			if(key < focusNode->keys[i]){
-
-				focusNode = focusNode->children[i];
-			}
-
-			if((i == (focusNode->n -1)) && (key > focusNode->keys[i])){
-
-				focusNode = focusNode->children[i+1];
-			}
-		} 
-} */
-		
-		
-}
-
 std::optional< Node * > BTree::find( key_t key )
 {
 
@@ -60,6 +14,8 @@ std::optional< Node * > BTree::find( key_t key )
 	Node* focusNode = root;
 
 	//tree only contains one node
+	
+	
 	if(focusNode->check_leaf()){
 
 		for(int i = 0; i < focusNode->n; i++){
@@ -70,9 +26,55 @@ std::optional< Node * > BTree::find( key_t key )
 	}
 	
 
+	//tree contains more than one node
+	else	while (true) {
 
-	std::cout <<"null opt returned"<<std::endl;
-	return std::nullopt;     //no-value is being returned?
+		for (int i = 0; i < focusNode->n; i++) {
+
+			if (key == focusNode->keys[i])
+				return focusNode;
+
+			if (key < focusNode->keys[i]) {
+
+				focusNode = focusNode->children[i];
+				if (i == 0) i--;								//set i = (-1) so that the counter "resets" to 0 when the next iteration of the loop is run. Used so we don't miss out on any keys of the children.
+					
+				else i -= i - 1;
+				if (focusNode->check_leaf()) {
+
+					for (int j = 0; j < focusNode->n; j++)
+						if (key == focusNode->keys[j])
+							return focusNode;
+
+				}
+			}
+
+			if (i == (focusNode->n - 1)) {
+
+				if (key > focusNode->keys[i]) {
+					
+					focusNode = focusNode->children[i + 1];
+					
+					if (i == 0) i--;
+					else i -= i-1;							//set i = (-1) so that the counter "resets" to 0 when the next iteration of the loop is run. Used so we don't miss out on any keys of the children.
+					
+					if (focusNode->check_leaf()) {
+
+						for (int j = 0; j < focusNode->n; j++)
+							if (key == focusNode->keys[j])
+								return focusNode;
+					}
+
+					
+
+				}
+
+				
+			}
+		}
+
+		return std::nullopt;
+	}
 }
 
 
@@ -83,6 +85,7 @@ key_list_t BTree::find( key_t lower_bound, key_t upper_bound )
 	inOrderRangeTraversal(root, lower_bound, upper_bound);
 	return listOfKeys;
 }
+
 
 //if node has no children, then node is a leaf
 bool Node::check_leaf() {
@@ -138,11 +141,6 @@ Node* BTree::insertInFullNode(Node* parentNode, int key){
 		std::cout <<parentNode->children[2]->keys[0]<<std::endl;
 		std::cout <<parentNode->children[2]->keys[1] <<std::endl;
 
-
-
-		//need to split parentNode first.
-	//	std::copy(parentVirtualNode,parentVirtualNode,parentNode->keys);
-
 	
 
 		if(parentNode == root){
@@ -194,7 +192,6 @@ Node* BTree::insertInFullNode(Node* parentNode, int key){
 		
 	
 }
-//THIS DOES NOT WORK. VirtualNode[] doesn't work with std::sort when passed as an argument to a function
 
 int BTree::findMid(Node* focusNode, int virtualNode [], int key){
 
@@ -491,8 +488,16 @@ void BTree::inOrderRangeTraversal(Node* focusNode, key_t lower, key_t upper) {
 		int i;
 		for ( i = 0; i < focusNode->n; i++) {
 				inOrderRangeTraversal(focusNode->children[i], lower, upper);
-			//    std::cout << focusNode->keys[i] << "->";   //visit the currently focused on node because we know that will be the next value of the lowest value
 				
+				if (upper == lower)
+				{
+					if (focusNode->keys[i] == lower) {
+						listOfKeys.push_back(focusNode->keys[i]);
+						break;
+					}
+				}
+
+
 				if(focusNode->keys[i] >= lower){
 					if(focusNode->keys[i] < upper)
 					listOfKeys.push_back(focusNode->keys[i]);
@@ -506,9 +511,8 @@ void BTree::inOrderRangeTraversal(Node* focusNode, key_t lower, key_t upper) {
 
 } 
 
+
 //similar to inOrderTraversal but we compare each element of 2 b trees
-
-
 bool BTree::inOrderComparisonTraversal(Node* focusNode1, Node* focusNode2) {
 
 	if(focusNode1 != NULL){
