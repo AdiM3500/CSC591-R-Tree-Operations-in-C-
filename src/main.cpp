@@ -6,7 +6,7 @@ int main() {
 
 	RTree theTree;
 
-	DataNode datas{ {{1,2 }, {3, 5 }, {4,3} } };
+	DataNode datas{ {{1,2 }, {3, 5 }, {4, 3} } };
 
 	for (int i = 0; i < datas.array_size; i++) {
 
@@ -33,7 +33,7 @@ int main() {
 	std::cout << "The current MBR points to the datapoints: " << std::endl;
 
 //	std::cout << "the datas pointer: " << &datas << std::endl;
-	for (int i = 0; i < theTree.root->dataPtr[0]->dpoints.size(); i++) {
+	for (int i = 0; i < theTree.root->dataPtr[0]->array_size; i++) {
 
 		std::cout << "(" << theTree.root->dataPtr[0]->dpoints[i].first << "," << theTree.root->dataPtr[0]->dpoints[i].second <<")";
 		
