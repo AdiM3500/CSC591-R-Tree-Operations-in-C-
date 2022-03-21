@@ -1,5 +1,5 @@
 /**
- * Set of unit tests with which to evaluate the lookup/find function in the BTree implementation.
+ * Set of unit tests with which to evaluate the lookup/find function in the R-Tree implementation.
  */
 
 #include "catch2/catch.hpp"
@@ -159,7 +159,11 @@ SCENARIO("We perform a lookup on a tree with 7 nodes (root, leftchild, rightChil
 
     }
 }
-// case 4: search for a key in a left child
-// case 5: search for a key in a middle child
-// case 6: search for a key left then right
-// case 7: search for a key right then left
+
+// case 1: search for a point in an empty tree
+// case 2: search for a point not in a tree with just one data node
+// case 3: search for a point outside the area indexed by a tree of height two
+// case 4: search for a point that is in a tree of height two
+// case 5: search for a point not in a tree of height two but inside one of the leaf MBR's
+// case 6: search for a point that is in a tree of height three
+// case 7: search for a point htat is outside the area indexed by the leaves of a tree of height three
