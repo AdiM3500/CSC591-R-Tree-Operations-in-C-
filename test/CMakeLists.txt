@@ -1,16 +1,16 @@
 add_executable(
   unit_tests
     unitTests.cpp
-    btree/btree-lookup-tests.cpp
-    btree/btree-range-tests.cpp
-    btree/btree-tests.cpp
+    rtree/rtree-lookup-tests.cpp
+    rtree/rtree-range-tests.cpp
+    rtree/rtree-tests.cpp
 
  
 )
 
 target_link_libraries(
   unit_tests
-    btree
+    rtree
     gcov
 )
 

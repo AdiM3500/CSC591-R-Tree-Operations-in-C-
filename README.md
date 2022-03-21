@@ -1,20 +1,24 @@
-# CSC 591 - Data Structure Assignment
+# CSC 591 - A2
 
-This repository will contain the implementation of a two-dimensional R Tree in C++. It currently only contains this README file. I shall upload the source code and open a pull request as soon as I have the code somewhat working. Thank you! 
+Goal: Build an R-Tree
+
+This new repo currently only consists of copy+pasted code from assignment 1, except for name changes to files (and consequently, changes to some cmakelists.txt files)
+to differentiate it from assignment 1. Made this to see if build instructions work with updated files.
 
 ## Build Instructions
 
-This project uses [CMake](https://cmake.org/) and [Catch2](https://github.com/catchorg/Catch2) as a build and unit test system, respectively. You are suggested to use an _out-of-source_ build by creating a separate subdirectory and invoking both `cmake` and `make` from there. For example, if you start in the top-level directory:
+Running this project will yield the assignment 1 submission code. This will be changed after I implement the r-tree code. 
 
 ```
 mkdir build
 cd build
 cmake ../
 make
-./a1
+./a2
 ```
 
-You can also build the sample unit tests as well with the `-BUILD_TESTS` flag to `cmake` as follows:
+## Build with Unit Tests
+
 ```
 mkdir build
 cd build
@@ -23,10 +27,6 @@ make
 ./test/unit_tests
 ```
 
-## Dependencies
+## Extra info
 
-In order to run this code, you will need:
-
-  * CMake (which comes pre-installed in most development environments)
-  * Catch2 (which is a header-only library that has been shipped with this code and is subject to the Catch2 licensing)
-
+An extra file called RTreeOrigin.cpp is also present in the repo, which contains the old RTree.cpp file that I had began writing. This will be removed shortly after I start implementing the R-Tree (and is currently here just for reference).

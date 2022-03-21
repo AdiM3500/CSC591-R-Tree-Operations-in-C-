@@ -1,12 +1,12 @@
-add_subdirectory( btree )
+add_subdirectory( rtree )
 
 add_executable(
-  a1
+  a2
     main.cpp
 )
 
 set_target_properties(
-  a1
+  a2
     PROPERTIES
       ARCHIVE_OUTPUT_DIRECTORY "../lib/"
       LIBRARY_OUTPUT_DIRECTORY "../lib/"
@@ -14,7 +14,7 @@ set_target_properties(
 )
 
 target_link_libraries(
-  a1
+  a2
     ${Boost_LIBRARIES}
-    btree
+    rtree
 )
