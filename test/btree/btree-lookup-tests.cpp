@@ -16,6 +16,8 @@ SCENARIO( "We perform a lookup on an empty tree", "[btree][empty][lookup][a1]")
         {
             auto const actual_result = tree.find( key );
 
+            
+
             THEN( "The result is null" )
             {
                 auto const expected_result = std::nullopt;
