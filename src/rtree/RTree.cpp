@@ -19,15 +19,15 @@ std::optional<Node*> RTree::find(coordinate_t datapoint) {
 	* if tree contains only one node(one MBR node that points to a datanode)
 	*/
 
-	std::cout << "focusnode size: " << focusNode->n <<std::endl;
+	std::cout << "root focusnode size: " << focusNode->n <<std::endl;
 
 	if (focusNode->check_leaf()) {
 
-		std::cout << "we are at a leaf"<<std::endl ;
+		std::cout << "we are at a leaf" << std::endl;
 
 		//displaying purposes
 		//------------------------------------------------------------------------------------- 
-		
+
 	//	std::cout << "its a leaf node with coords: " << std::get<pair_of_coordinates_t>(focusNode->contents[0]).first.first<<std::endl;
 		//std::cout <<"its a leaf node with coords: " << std::get<pair_of_coordinates_t>(focusNode->contents[0]).first.second << std::endl;
 
@@ -35,38 +35,38 @@ std::optional<Node*> RTree::find(coordinate_t datapoint) {
 	//	std::cout << "leaf node's child contains: " << std::get<coordinate_t>(focusNode->children[0]->contents[1]).first << std::endl;
 
 		//------------------------------------------------------------------------------------
-		
+
 		for (auto i = 0; i < focusNode->n; i++) {
 
 			for (auto j = 0; j < focusNode->children[i]->n; j++) {
 
 
-				std::cout << "comparing datapoint: " << datapoint.first << ", " << datapoint.second << " to : " 
-					<< std::get<coordinate_t>(focusNode->children[i]->contents[j]).first << ", " << std::get<coordinate_t>(focusNode->children[i]->contents[j]).second<<std::endl;
+				std::cout << "comparing datapoint: " << datapoint.first << ", " << datapoint.second << " to : "
+					<< std::get<coordinate_t>(focusNode->children[i]->contents[j]).first << ", " << std::get<coordinate_t>(focusNode->children[i]->contents[j]).second << std::endl;
 
 
 				if (datapoint == std::get<coordinate_t>(focusNode->children[i]->contents[j]))
-				{	
+				{
 					std::cout << "FOUND" << std::endl;
 					return focusNode;   //returns the root node
 				}
 
 			}
-			
 
+
+
+		}
 
 	}
-		
-	}
 
-	 return std::nullopt;
+	else return std::nullopt;
 }
 
 
 //If an MBR node's children is pointing to a datanode, then that node is a leaf node.
 bool Node::check_leaf() {
 
-	if ((children[0]->contents[0].index() == 0) || (children[1]->contents[0].index() == 0) || (children[2]->contents[0].index() == NULL) )
+	if ((children[0]->contents[0].index() == 0) )
 		return true;
 
 	else return false;
