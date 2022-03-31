@@ -50,7 +50,7 @@ public:
 	 */
 
 
-	bool check_leaf();     //function to check if node is a leaf node. A leaf node is an MBR node that points to a datanode
+	bool check_leaf() const;     //function to check if node is a leaf node. A leaf node is an MBR node that points to a datanode
 
 	pair_of_coordinates_t find_minmax_coordinates(variety_content data);  //find the minimum and maximum coordinates from the list of datapoints 
 
@@ -79,5 +79,10 @@ public:
 	//NOT WRITTEN: Will be used for finding a range of elements in the Rtree
 	pair_of_coordinates_t find(coordinate_t lower_bound, coordinate_t upperbound);
 
+	//returns true if a datapoint could be theoretically contained inside a rectangle
+	bool isContained(coordinate_t d, pair_of_coordinates_t mbrs);
+
+	//produces an in-order traversal of the whole r-tree
+	void inOrderTraversal(Node* focusNode);
 
 };

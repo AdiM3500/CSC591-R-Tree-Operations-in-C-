@@ -49,7 +49,12 @@ std::optional<Node*> RTree::find(coordinate_t datapoint) {
 
 				}
 
-				
+				//if the iscontained check fails throughout the root node, we know the datapoint is not present in the r-tree
+
+				if(i == (focusNode->n - 1)){
+					if (exists == NULL) return std::nullopt;
+				}
+			
 
 				//we are at a datanode
 				if (focusNode->check_leaf()) {
