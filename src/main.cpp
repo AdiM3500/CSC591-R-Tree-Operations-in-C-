@@ -5,84 +5,30 @@
 
 int main() {
 
+    RTree tree;
+
+    //   variety_content_list_t root_mbr = { pair_of_coordinates_t{ {5,1},{11,10} } };
+
+     //  tree.root is a root node that contains MBRs and points to two MBR nodes
+    tree.root = new Node{ variety_content_list_t{ pair_of_coordinates_t{ {1,2}, {2,7} }, pair_of_coordinates_t{ {5,1} , {11,10} } } };
+
+    tree.root->children[0] = new Node{ variety_content_list_t{ pair_of_coordinates_t{ {1,2}, {2,7} } } };
+
+    //children[0] is a leaf mbr node that contains 1 MBR and points to a data node
+    tree.root->children[0]->children[0] = new Node{ variety_content_list_t{ coordinate_t{1,2},coordinate_t{2,4},coordinate_t{1,7} } };
 
 
-	/* 
-	RTree theTree;
+    tree.root->children[1] = new Node{ variety_content_list_t{ pair_of_coordinates_t{ {5,8}, {8,10} },
+        pair_of_coordinates_t{{6,4},{8,6}}, pair_of_coordinates_t{ {9,1}, {11,3} }   } };
 
-	
-	using variety_content = std::variant < std::array < coordinate_t, 3 >, std::array< pair_of_coordinates_t, 3 > >;
+    //children[1] is a leaf mbr node that contains 3 MBRs and points to 3 data nodes
+    tree.root->children[1]->children[0] = new Node{ variety_content_list_t{ coordinate_t{5,9},coordinate_t{7,8},coordinate_t{8,10} } };
 
-	variety_content v;
-	std::array < coordinate_t, 3 > v1;
+    tree.root->children[1]->children[1] = new Node{ variety_content_list_t{ coordinate_t{6,6},coordinate_t{7,5},coordinate_t{8,4} } };
 
-	v1 = { { {1,2}, {3,4} } };
-	
-	v = { { {1,2}, {3,4} } };
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	DataNode dp({7, 3});
-	DataNode datas{ {{1,2 }, {3, 5 }, {4,3} } };
+    tree.root->children[1]->children[2] = new Node{ variety_content_list_t{ coordinate_t{9,2},coordinate_t{10,1},coordinate_t{11,3} } };
 
-	for (int i = 0; i < datas.array_size; i++) {
+    tree.inOrderTraversal(tree.root);
 
-
-		std::cout << datas.dpoints[i].first << std::endl;
-		std ::cout << datas.dpoints[i].second << std::endl;
-
-	} 
-
-	std::cout << "data point size: " << datas.array_size <<std::endl;
-
-	
-
-	theTree.root = new Node(datas);
-	
-
-	//theTree.root = new Node( datas );
-	
-	//For displaying purposes only
-
-	std::cout <<"min x: "<<theTree.root->mbr[0].first.first << std::endl;
-	std::cout <<"min y: "<<theTree.root->mbr[0].first.second << std::endl;
-	
-	std::cout <<"max x: "<<theTree.root->mbr[0].second.first << std::endl;
-	std::cout <<"max y: "<<theTree.root->mbr[0].second.second <<std::endl;
-
-	std::cout << "-------------------------------------------------------" << std::endl <<std::endl;
-	std::cout << "The current MBR points to the datapoints: " << std::endl;
-
-//	std::cout << "the datas pointer: " << &datas << std::endl;
-	for (int i = 0; i < theTree.root->dataPtr[0]->dpoints.size(); i++) {
-
-		std::cout << "(" << theTree.root->dataPtr[0]->dpoints[i].first << "," << theTree.root->dataPtr[0]->dpoints[i].second <<")";
-		
-
-
-	}
-	
-	
-
-
-	std::cin.get();
-
-	*/
+    //case 3:
 }
