@@ -12,7 +12,9 @@
 using coordinate_t = std::pair< int, int >;
 using pair_of_coordinates_t = std::pair < coordinate_t, coordinate_t >;
 using variety_content = std::array < std::variant <coordinate_t, pair_of_coordinates_t>, 3 >;              //an array of either only coordinates or only a pair of coordinates
-using variety_content_list_t = std::vector < std::variant <coordinate_t, pair_of_coordinates_t> >;			//a list of either datapoints or pair of coordinates (Datapoints list or MBR list)
+using variety_content_list_t = std::vector < std::variant <coordinate_t, pair_of_coordinates_t> >;	//a list of either datapoints or pair of coordinates (Datapoints list or MBR list)
+
+using datapoint_list_t = std::vector<coordinate_t>;
 
 
 
@@ -38,8 +40,6 @@ public:
 
 		n = data_to_insert.size();
 
-
-		std::cout << "size: " << n << std::endl;
 	}
 
 
@@ -50,7 +50,7 @@ public:
 	 */
 
 
-	bool check_leaf();     //function to check if node is a leaf node. A leaf node is an MBR node that points to a datanode
+	bool check_leaf() const;     //function to check if node is a leaf node. A leaf node is an MBR node that points to a datanode
 
 	pair_of_coordinates_t find_minmax_coordinates(variety_content data);  //find the minimum and maximum coordinates from the list of datapoints 
 
@@ -69,15 +69,30 @@ public:
 
 	Node* root = NULL; //ROOT IS A POINTER TO A NODE OBJECT
 
+	datapoint_list_t listOfPoints{};
 	
+	/**
+	 * Returns a list of all datapoints that overlap a search rectangle
+	 */
+	datapoint_list_t find(pair_of_coordinates_t search_rectangle);
+
+
 	//NOT WRITTEN: Will be used for inserting a datapoint into the Tree
 	void AddDatapoint(coordinate_t d);
 
 	//PARTIALLY WRITTEN: Will be used for finding a datapoint in the RTree
 	std::optional< Node* > find(coordinate_t datapoint);
 
-	//NOT WRITTEN: Will be used for finding a range of elements in the Rtree
-	pair_of_coordinates_t find(coordinate_t lower_bound, coordinate_t upperbound);
+	//returns true if a datapoint could be theoretically contained inside a rectangle
+	bool isContained(coordinate_t d, pair_of_coordinates_t mbrs);
 
+	//produces an in-order traversal of the whole r-tree
+	void depthFirstTraversal(Node* focusNode);
+
+	bool comparisonTraversal(Node* focusNode1, Node* focusNode2);
+
+	void rangeTraversal(Node* focusNode, pair_of_coordinates_t search_rectangle);
+
+	bool operator == (RTree other) const;
 
 };
