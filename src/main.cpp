@@ -2,10 +2,44 @@
 
 #include <iostream>  
 
+
 int main() {
 
+
+
+	/* 
 	RTree theTree;
 
+	
+	using variety_content = std::variant < std::array < coordinate_t, 3 >, std::array< pair_of_coordinates_t, 3 > >;
+
+	variety_content v;
+	std::array < coordinate_t, 3 > v1;
+
+	v1 = { { {1,2}, {3,4} } };
+	
+	v = { { {1,2}, {3,4} } };
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	DataNode dp({7, 3});
 	DataNode datas{ {{1,2 }, {3, 5 }, {4,3} } };
 
 	for (int i = 0; i < datas.array_size; i++) {
@@ -17,9 +51,13 @@ int main() {
 	} 
 
 	std::cout << "data point size: " << datas.array_size <<std::endl;
+
 	
 
-	theTree.root = new Node( &datas );
+	theTree.root = new Node(datas);
+	
+
+	//theTree.root = new Node( datas );
 	
 	//For displaying purposes only
 
@@ -45,4 +83,6 @@ int main() {
 
 
 	std::cin.get();
+
+	*/
 }
