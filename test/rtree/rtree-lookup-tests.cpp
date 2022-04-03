@@ -36,18 +36,18 @@ SCENARIO("We perform a lookup on a tree with one node ")
 {
 
     //case 2:
-    GIVEN("An R-Tree with a single MBR node that points to a datanode")
+    GIVEN("An R-Tree with a single data node")
 
     {
         RTree tree;
 
-        variety_content_list_t mbr = { pair_of_coordinates_t{ {1,2},{4,5} }  };
+     //   variety_content_list_t mbr = { pair_of_coordinates_t{ {1,2},{4,5} }  };
 
         variety_content_list_t datanode = { coordinate_t{1,2}, coordinate_t{3,5}, coordinate_t{4,3} };
 
-        tree.root = new Node(mbr);
+        tree.root = new Node(datanode);
 
-        tree.root->children[0] = new Node (datanode);
+      //  tree.root->children[0] = new Node (datanode);
 
         auto const datapoint = coordinate_t{ 7,8 };
 
@@ -88,8 +88,71 @@ SCENARIO("We perform a lookup on a tree with one node ")
 }
 
 
-
 SCENARIO("We perform a lookup on a tree of height 2")
+{
+    GIVEN("An R-tree with 1 MBR Node that contains 2 MBRs which point to 2 datanodes ")
+    {
+        RTree tree;
+
+        tree.root = new Node{ variety_content_list_t{ pair_of_coordinates_t{ {1,2}, {2,7} }, pair_of_coordinates_t{ {5,8} , {8,10} } } };
+
+        tree.root->children[0] = new Node{ variety_content_list_t{ coordinate_t{1,2}, coordinate_t{2,4}, coordinate_t{1,7} } };
+        tree.root->children[1] = new Node{ variety_content_list_t{coordinate_t{5,9},coordinate_t{7,8},coordinate_t{8,10}} };
+
+        //case 3:
+        WHEN("We lookup a datapoint outside the area indexed by the tree")
+        {
+            auto const actual_result = tree.find(coordinate_t{6,6});
+
+            THEN("The result is not found")
+            {
+                //auto const expected_result = std::nullopt;
+
+                REQUIRE(actual_result == std::nullopt);
+            }
+        }
+
+
+        //case 4:
+        WHEN("We lookup a datapoint that is definitely in the tree")
+        {
+            auto const actual_result = tree.find(coordinate_t{5,9});
+
+            THEN("The rightmost data node that contains the datapoint is returned ")
+            {
+
+                auto const expected_result = tree.root->children[1];
+
+                CHECK(actual_result != std::nullopt);
+
+                    REQUIRE(*actual_result == expected_result);
+            }
+        }
+
+        //case 5:
+      WHEN("We lookup a datapoint thaat is not in the tree but could be inside one of the leaf MBR nodes")
+        {
+
+            auto const actual_result = tree.find(coordinate_t{7,9});
+
+            THEN("The Node that could contain the datapoint is returned")
+            {
+                auto const expected_result = tree.root;
+
+                CHECK(actual_result != std::nullopt);
+                REQUIRE(*actual_result == expected_result);
+            }
+
+
+        }
+
+    
+    }
+}
+
+
+//case 7:
+SCENARIO("We perform a lookup on a tree of height 3")
 {
     GIVEN("An R-tree with 6 MBR nodes and 4 data Nodes")
     {
@@ -117,6 +180,24 @@ SCENARIO("We perform a lookup on a tree of height 2")
         tree.root->children[1]->children[2] = new Node{ variety_content_list_t{ coordinate_t{9,2},coordinate_t{10,1},coordinate_t{11,3} } };
      //   tree.root->children
 
+
+        WHEN("We lookup a point inside the tree")
+        {
+            auto const actual_result = tree.find(coordinate_t{ 8,4 });
+
+            THEN("The datanode containing the point is returned")
+            {
+
+                auto const expected_result = tree.root->children[1]->children[1];
+
+                CHECK(actual_result != std::nullopt);
+                REQUIRE(*actual_result == expected_result);
+            }
+        }
+
+
+
+        //case 7:
         WHEN("We lookup a point outside the tree")
         {
             auto const actual_result = tree.find(coordinate_t{4,6});
@@ -132,6 +213,7 @@ SCENARIO("We perform a lookup on a tree of height 2")
         }
     }
 }
+
 
 // case 1: search for a point in an empty tree
 // case 2: search for a point not in a tree with just one data node
