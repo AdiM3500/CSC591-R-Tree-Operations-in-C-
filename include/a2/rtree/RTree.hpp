@@ -69,7 +69,7 @@ public:
 
 	Node* root = NULL; //ROOT IS A POINTER TO A NODE OBJECT
 
-	datapoint_list_t listOfPoints{};
+	bool equality_confirmed = true;
 	
 	/**
 	 * Returns a list of all datapoints that overlap a search rectangle

@@ -329,8 +329,98 @@ datapoint_list_t RTree:: find(pair_of_coordinates_t search_rectangle) {
 } 
 
 
-void RTree::rangeTraversal(Node* focusNode, pair_of_coordinates_t search_rectangle)
-{
+bool RTree::operator == (RTree other) const {
 
+
+	if (root == NULL){
+
+		if (other.root == NULL) return true;
+
+		if (other.root != NULL) return false;
+
+	}
+
+	if (other.root == NULL) {
+
+		if (root != NULL) return false;
+
+		if (root == NULL) return true;
+
+	}
+
+
+	else {
+
+		bool res = other.comparisonTraversal(root, other.root);
+
+		return res;
+	}
+
+
+	return false;
+}
+
+
+bool RTree::comparisonTraversal(Node* focusNode1, Node* focusNode2) {
+
+	
+
+
+	if (focusNode1 != NULL) {
+
+		int i;
+
+		if (focusNode2 == NULL) { equality_confirmed = false; return equality_confirmed; }
+
+		for (i = 0; i < focusNode1->n; i++) {
+
+			//std::cout << "fnode1 size : " << focusNode1->n << "fnode2 size: " << focusNode2->n << std::endl;
+
+			if (focusNode1->n != focusNode2->n) { 
+				
+				equality_confirmed = false;
+				break;
+			
+			}
+			comparisonTraversal(focusNode1->children[i], focusNode2->children[i]);
+
+
+
+			//std::cout << "\n focusnode1 size: " << focusNode1->n << "  and focusNode2 size: " << focusNode2->n<<std::endl;
+			if (focusNode1->contents[i].index() == 0) {
+
+				std::cout << "fnode1 size : " << focusNode1->n << " fnode2 size: " << focusNode2->n << std::endl;
+
+				//if (focusNode1->n != focusNode2->n) return false;
+				std::cout <<"\ncomparing datapoints of fnode1 " << "(" << std::get<coordinate_t>(focusNode1->contents[i]).first << ", " << std::get<coordinate_t>(focusNode1->contents[i]).second << ") ";
+				std::cout <<"to datapoints of fnode2 " << "(" << std::get<coordinate_t>(focusNode2->contents[i]).first << ", " << std::get<coordinate_t>(focusNode2->contents[i]).second << ")\n ";
+
+
+				if (std::get<coordinate_t>(focusNode1->contents[i]) != std::get<coordinate_t>(focusNode2->contents[i])) {
+					equality_confirmed = false;
+					
+				
+
+				}
+					
+			}
+
+			if (focusNode1->contents[i].index() == 1) {
+
+
+				//if (focusNode1->n != focusNode2->n) return false;
+				if (std::get<pair_of_coordinates_t>(focusNode1->contents[i]) != std::get<pair_of_coordinates_t>(focusNode2->contents[i]))
+				equality_confirmed = false;
+				
+			}
+		}
+	}
+
+	
+
+	
+
+
+	 return equality_confirmed;
 }
 
