@@ -21,7 +21,7 @@ SCENARIO("We perform a range search on a tree of height 2")
 
 
 		//case 1:
-		WHEN("We lookup a search rectangle that does not overlap any of the MBRs")
+ 		WHEN("We lookup a search rectangle that does not overlap any of the MBRs")
 		{
 			auto const actual_result = tree.find(pair_of_coordinates_t{ {4,3},{8,7} });
 
@@ -39,7 +39,7 @@ SCENARIO("We perform a range search on a tree of height 2")
 			}
 		}
 
-
+		
 		//case 2:
 		WHEN("We lookup a degenerate search rectangle that corresponds to a datapoint in one of the MBRs ")
 		{
@@ -56,7 +56,8 @@ SCENARIO("We perform a range search on a tree of height 2")
 			}
 		}
 
-
+	
+			
 		//case 3:
 		WHEN("We lookup a search rectangle that spans a single MBR")
 		{
@@ -74,7 +75,7 @@ SCENARIO("We perform a range search on a tree of height 2")
 
 		}
 
-
+		
 		//case 4:
 		WHEN("We lookup a search rectangle that spans the entire tree")
 		{
@@ -90,7 +91,7 @@ SCENARIO("We perform a range search on a tree of height 2")
 			}
 		}
 
-
+		
 		//case 5:
 		WHEN("We lookup a search rectangle that partially overlaps both the MBRs in tree")
 		{
@@ -106,8 +107,12 @@ SCENARIO("We perform a range search on a tree of height 2")
 			}
 		}
 
+		
+		
 	}
 }
+
+
 
 
 
@@ -155,7 +160,7 @@ SCENARIO("We perform a range search on an R-Tree of height 3")
 			}
 		}
 
-
+		//case 7:
 		WHEN("We lookup a search rectangle that partially overlaps 2 datapoints in the first MBR of the root and 2 datapoints in the second MBR of the root ")
 		{
 
@@ -181,7 +186,7 @@ SCENARIO("We perform a range search on an R-Tree of height 3")
 //case 4: We do a range search of a search rectangle that spans the entire tree of height 2.
 //case 5: We look for a search rectangle that partially overlaps 2 MBRs on a tree of height 2.
 //case 6: We look for a search rectangle that spans the largest MBR in a tree of height 3.
-//case 7: We look for a search rectangle that spans the entire tree of height 3.
+//case 7: We look for a search rectangle that partially spans both root MBRs in a tree of height 3.
 
 
 
