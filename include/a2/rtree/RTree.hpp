@@ -52,9 +52,9 @@ public:
 
 	bool check_leaf() const;     //function to check if node is a leaf node. A leaf node is an MBR node that points to a datanode
 
-	pair_of_coordinates_t find_minmax_coordinates(variety_content data);  //find the minimum and maximum coordinates from the list of datapoints 
+	pair_of_coordinates_t find_minmax_coordinates(variety_content_list_t data);  //find the minimum and maximum coordinates from the list of datapoints 
 
-	pair_of_coordinates_t mbr_generator (Node* datapoint_list); 	//(HASN'T BEEN USED YET) This function will take a datapoint list and return a MBR corresponding to it.
+	pair_of_coordinates_t mbr_generator (variety_content_list_t list); 	//This function will take a datapoint list and return a MBR corresponding to it.
 
 	
 
@@ -69,8 +69,11 @@ public:
 
 	Node* root = NULL; //ROOT IS A POINTER TO A NODE OBJECT
 
-	bool equality_confirmed = true;
+	bool equality_confirmed = true;									//used to check if two r-tree objects are equal or not. used in the comparisonTraversal function
+
+	datapoint_list_t listOfDataPoints{};							//set as empty initially. Used to contain datapoints that overlap a search-rectangle. Primarily used in the find function (for range search) and in the rangeTraversal function.
 	
+
 	/**
 	 * Returns a list of all datapoints that overlap a search rectangle
 	 */
@@ -86,11 +89,13 @@ public:
 	//returns true if a datapoint could be theoretically contained inside a rectangle
 	bool isContained(coordinate_t d, pair_of_coordinates_t mbrs);
 
-	//produces an in-order traversal of the whole r-tree
+	//produces a depth-first traversal of the whole r-tree
 	void depthFirstTraversal(Node* focusNode);
 
+	//uses depth-first traversal of two r-tree objects simultaneously to check whether each and every node's contents of one object are exactly the same as the other.
 	bool comparisonTraversal(Node* focusNode1, Node* focusNode2);
 
+	//uses conditional statements to check whether mbr(s) overlap a given search rectangle. Then selectively recurses through the tree to locate the nodes which contain the datapoints that overlap the search rectangle.
 	void rangeTraversal(Node* focusNode, pair_of_coordinates_t search_rectangle);
 
 	bool operator == (RTree other) const;
