@@ -87,14 +87,26 @@ bool Node::check_leaf() const {
 }
 
 
-pair_of_coordinates_t Node::find_minmax_coordinates(variety_content data) {
+
+pair_of_coordinates_t Node::find_minmax_coordinates(variety_content_list_t data) {
+
+	pair_of_coordinates_t minmax_coords;
+
+	//if only one datapoint is given as the argument, return the same datapoint ad both the min and the max coordinate
+	if (data.size() == 1) {
+
+		minmax_coords = { {std::get<coordinate_t>(data[0]).first, std::get<coordinate_t>(data[0]).second },
+							{ std::get<coordinate_t>(data[0]).first, std::get<coordinate_t>(data[0]).second  }  };
+
+		return minmax_coords;
+	}
+
 
 	int min_index_x = 0;
 	int min_index_y = 0;
 	int max_index_x = 0;
 	int max_index_y = 0;
 
-	//coordinate_t dpoints = std::get<coordinate_t>(data[0]);
 
 	for (int i = 0; i < data.size(); i++) {
 
@@ -126,22 +138,28 @@ pair_of_coordinates_t Node::find_minmax_coordinates(variety_content data) {
 	}
 
 
-	pair_of_coordinates_t minmax_coords = { { std::get<coordinate_t>(data[min_index_x]).first, std::get<coordinate_t>(data[min_index_y]).second }
+	 minmax_coords = { { std::get<coordinate_t>(data[min_index_x]).first, std::get<coordinate_t>(data[min_index_y]).second }
 											, { std::get<coordinate_t>(data[max_index_x]).first, std::get<coordinate_t>(data[max_index_y]).second} };
 
 	return minmax_coords;
 }
 
+//	pair_of_coordinates_t minmax_coords = { { std::get<coordinate_t>(data[min_index_x]).first, std::get<coordinate_t>(data[min_index_y]).second }
+	//										, { std::get<coordinate_t>(data[max_index_x]).first, std::get<coordinate_t>(data[max_index_y]).second} };
+
+	//return minmax_coords;
 
 
-pair_of_coordinates_t Node::mbr_generator(Node* datanode) {
+
+
+pair_of_coordinates_t Node::mbr_generator(variety_content_list_t list) {
 
 	pair_of_coordinates_t mbr;
 	//make sure its type-safe
 	
-	if (datanode->contents[0].index() == 0)
+	if (list[0].index() == 0)
 	{
-		mbr = datanode->find_minmax_coordinates(datanode->contents);
+		mbr = find_minmax_coordinates(list);
 	}
 
 	return mbr;
@@ -195,138 +213,87 @@ void RTree::depthFirstTraversal(Node* focusNode) {
 
 datapoint_list_t RTree:: find(pair_of_coordinates_t search_rectangle) {
 
-	Node* focusNode = root;
+	//Node* focusNode = root;
+	//datapoint_list_t listOfDataPoints{};		//vector of datapoints that are contained within the search rectangle; to be returned by the find function
+
+
+	rangeTraversal(root, search_rectangle);
+
+	return listOfDataPoints;
 
 	
-	Node* parent;								//parent variable to keep track of the focusnode's parent
-	datapoint_list_t listOfDataPoints{};		//vector of datapoints that are contained within the search rectangle; to be returned by the find function
-
-
-	Node* exists = NULL;
-
-	//a counter to keep track of which MBRs we have read/or are currently reading in the root
-	int root_counter = 0; 
-
-	//a counter to keep track of the focusnode's parent MBRs that we have read or are currently reading. Specifically beneficial when we are at a leaf datanode and want to read the next MBR node in its parent.
-	int parent_counter = 0;
-
-	for (int i = 0; i < focusNode->n; i++) {
-
-
-		parent = focusNode;
 		
-		//always retain the parent's last known index of the MBR being read before going into the child
-		if (focusNode == parent) parent_counter = i;
 
-		//if the focusNode is the root retain the last known index of the MBR in the root that overlaps the search rectangle
-		if (focusNode == root) root_counter = i;
+} 
 
-		//if node is an MBR node
-		if (focusNode->contents[i].index() == 1) {
+void RTree::rangeTraversal(Node* focusNode, pair_of_coordinates_t search_rectangle) {
 
 
-			//condition to see if the search rectaangle overlaps the current MBR:
-			/*
-			*	Comparing two rectangles: { (X1min, Y1min), (X1max, Y1max) }  and { (X2min, Y2min), (X2max, Y2max) }
-			* 
-				FOR COORDINATE X:
-				(X2min <= X1max) AND (X1min <= X2max)
+	int i = 0;
 
-				FOR COORDINATE Y:
-				(Y2min <= Y1max) AND (Y1min <= Y2max)
-			*/
-			if ((search_rectangle.first.first <= std::get<pair_of_coordinates_t>(focusNode->contents[i]).second.first)
-				&& (std::get<pair_of_coordinates_t>(focusNode->contents[i]).first.first <= search_rectangle.second.first)
-				&& (search_rectangle.first.second <= std::get<pair_of_coordinates_t>(focusNode->contents[i]).second.second)
-				&& (std::get<pair_of_coordinates_t>(focusNode->contents[i]).first.second <= search_rectangle.second.second)
-				) {
+	if (focusNode!= NULL) {
 
-				//the search rectangle does overlap with at least one of the MBRs.
-				exists = focusNode;
+		int i;
+		for (i = 0; i < focusNode->n; i++) {
 
-				focusNode = focusNode->children[i];
+			//if the focusNode is a leaf node, check to see which datapoints does the MBR overlap
+			if (focusNode->contents[i].index() == 0)
+			{
+				if ((std::get<coordinate_t>(focusNode->contents[i]).first >= search_rectangle.first.first)
+					&& (std::get<coordinate_t>(focusNode->contents[i]).second >= search_rectangle.first.second)
+					&& (std::get<coordinate_t>(focusNode->contents[i]).first <= search_rectangle.second.first)
+					&& (std::get<coordinate_t>(focusNode->contents[i]).second <= search_rectangle.second.second)
+					) {
 
-				//set i = -1 to reset the loop to start reading from the beginning of the child node
-				i = int(-1);
-
-
-				//if we are at a datanode, loop through the datapoints inside it to understand which ones are contained within the search rectangle
-				if (focusNode->check_leaf()) {
-
-					
-					for (const auto& d : focusNode->contents) {
-
-
-						//check which datapoints are within the search rectangle
-						if ((std::get<coordinate_t>(d).first >= search_rectangle.first.first)
-							&& (std::get<coordinate_t>(d).second >= search_rectangle.first.second)
-							&& (std::get<coordinate_t>(d).first <= search_rectangle.second.first)
-							&& (std::get<coordinate_t>(d).second <= search_rectangle.second.second)
-							) {
-
-
-							//if the search rectangle is degenerate:
-							if (search_rectangle.first == search_rectangle.second) {
-
-								listOfDataPoints.push_back(std::get<coordinate_t>(d));
-								return listOfDataPoints;
-							}
-
-
-							//if the search rectangle is not degenerate:
-
-							listOfDataPoints.push_back(std::get<coordinate_t>(d));
-
-
-							//FOR DISPLAYING PURPOSES:
-							std::cout << "datapoint inside the search rectangle: " << std::get<coordinate_t>(d).first << ", " << std::get<coordinate_t>(d).second << std::endl;
-
-							
-					
-							
-							
-						}
-
-
-					}
-
-					//after finishing looping through the datanode, go back to its parent to see if there's another MBR that might overlap with the search rectangle
-					focusNode = parent;
-
-					
-					//start from the last read MBR in the parent node
-					i = parent_counter;
-
-					//if we have read through all MBRs in the parent node, go back to the last read MBR in the root
-					if (i == (focusNode->n - 1)) {		
-						
-						i = root_counter; 
-						focusNode = root;
-					}
-					
+					//(remove comment below to display exactly which datanodes are being returned)
+				//	std::cout << "(" << std::get<coordinate_t>(focusNode->contents[i]).first << ", " << std::get<coordinate_t>(focusNode->contents[i]).second << ") -> ";
+					listOfDataPoints.push_back(std::get<coordinate_t>(focusNode->contents[i]));
 
 				}
 
-				
-
-				
 			}
 
-			//if the search rectangle does not overlap any of the MBRs in the root node, then return the empty list of datapoints
-			if (i == (focusNode->n - 1)) {
 
-				if (exists == NULL) { 
-					return listOfDataPoints; 
+			// if the focusnode is an MBR node
+			if (focusNode->contents[i].index() == 1) {
+
+				// condition to check if the search rectangle is overlapping the current MBR
+				if ((search_rectangle.first.first <= std::get<pair_of_coordinates_t>(focusNode->contents[i]).second.first)
+					&& (std::get<pair_of_coordinates_t>(focusNode->contents[i]).first.first <= search_rectangle.second.first)
+					&& (search_rectangle.first.second <= std::get<pair_of_coordinates_t>(focusNode->contents[i]).second.second)
+					&& (std::get<pair_of_coordinates_t>(focusNode->contents[i]).first.second <= search_rectangle.second.second)
+					) {
+
+					// (remove comment below to display exactly which MBR nodes we are entering. Can be used to confirm that we are only traversing those nodes that actually overlap the search rectangle)
+				/*	std::cout << "[(" << std::get<pair_of_coordinates_t>(focusNode->contents[i]).first.first << ", " <<
+						std::get<pair_of_coordinates_t>(focusNode->contents[i]).first.second << "), (" <<
+						std::get<pair_of_coordinates_t>(focusNode->contents[i]).second.first << "," <<
+						std::get<pair_of_coordinates_t>(focusNode->contents[i]).second.second << ")] -> "; */
+
+					//selectively dfs recurse through the tree
+					rangeTraversal(focusNode->children[i], search_rectangle);
+
+					
 				}
+
+
 			}
-			
+			//	std::cout << "[(" << std::get<pair_of_coordinates_t>(focusNode->contents[i]).first.first << ", " <<
+				//std::get<pair_of_coordinates_t>(focusNode->contents[i]).first.second << "), (" <<
+				//std::get<pair_of_coordinates_t>(focusNode->contents[i]).second.first << "," <<
+				//std::get<pair_of_coordinates_t>(focusNode->contents[i]).second.second << ")] -> ";
 		}
 
 
-	}
-	return listOfDataPoints;
 
-} 
+	}
+	
+
+	//std::cout << "\n\n";
+		
+	
+		
+}
 
 
 bool RTree::operator == (RTree other) const {
@@ -416,11 +383,58 @@ bool RTree::comparisonTraversal(Node* focusNode1, Node* focusNode2) {
 		}
 	}
 
-	
-
-	
-
-
 	 return equality_confirmed;
 }
 
+
+//insertion function
+void RTree::AddDatapoint(coordinate_t d) {
+
+	Node* newNode = new Node{ variety_content_list_t{d} };
+
+	//if root is null, create a brand new mbr node with mbr in the root that indexes the datapoint given
+	if (root == NULL) {
+
+		//create an MBR to accomodate for the incoming datanode
+		
+		root = new Node{ variety_content_list_t{ pair_of_coordinates_t{ root->mbr_generator(variety_content_list_t{d}) }   } };			//this creates a degenrate mbr where the min and max coordinates are the same, since we are inserting just one datapoint to an empty tree.
+
+
+		root->children[0] = new Node{ variety_content_list_t{d} };
+
+		
+	}
+
+
+	else {
+
+		Node* focusNode = root;
+		Node* parent;
+
+		while (true) {
+
+			parent = focusNode;
+
+			for (int i = 0; i < focusNode->n; i++) {
+
+				if (isContained(d, std::get<pair_of_coordinates_t>(focusNode->contents[i]))) {
+
+					//check if we're at a leaf, else go down to the respective child
+					//if we're at a leaf, check if there's space
+					//if there's space, put the datapoint in the datanode
+					
+					return;
+				}
+
+				//if the datapoint to be inserted is outside of all of the indexable area of the r-tree
+				if (i == (focusNode->n - 1)) {
+
+					//pick the rectangle that shall invoke the least amount of increase of its area to accomodate the datapoint
+					//put the point inside the datanode of this rectangle
+
+					return;
+				}
+			}
+		}
+	}
+}
