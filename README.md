@@ -2,7 +2,7 @@
 
 Goal: Build an R-Tree
 
-Lookup and Range unit-tests are passing.
+Lookup and Range unit-tests are passing. 4 out of 7 insertion unit_tests are passing.
 
 ## Build Instructions
 
