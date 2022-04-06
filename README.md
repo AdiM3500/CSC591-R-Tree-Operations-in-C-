@@ -2,7 +2,7 @@
 
 Goal: Build an R-Tree
 
-Prelim code has been posted
+Lookup and Range unit-tests are passing.
 
 ## Build Instructions
 
