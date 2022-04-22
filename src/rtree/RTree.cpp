@@ -500,3 +500,223 @@ int Node:: updateMBRNode(Node* focusNode, coordinate_t d) {
 
 	return updated_index;
 }
+
+
+
+
+/*   
+   *Functions below are specifically related to the kNN query
+*/
+
+
+double RTree::calc_distance(coordinate_t querypoint, coordinate_t datapoint) {
+
+	double distance;
+
+	//euclidian distance between the querypoint and the datapoint
+	distance = sqrt(pow(querypoint.first - datapoint.first, 2) + pow(querypoint.second - datapoint.second, 2)) ;
+
+	return distance;
+
+}
+
+
+double RTree::calc_distance(coordinate_t querypoint, pair_of_coordinates_t rectangle) {
+
+	//consider querypoint (x1,y1)
+
+	//calculating distance in the x-dimension
+	double dx, dy;
+
+	/*
+			// querypoint.x < rectangle.min.x
+	if (querypoint.first < rectangle.first.first) {
+
+		dx = rectangle.first.first - querypoint.first;  //minx - x1
+
+	}
+
+			// rectangle.min.x <= querypoint.x <= rectangle.max.x
+	if (querypoint.first >= rectangle.first.first && querypoint.first <= rectangle.second.first) {
+
+		dx = 0;
+	}
+
+			//querypoint.x > rectangle.max.x
+	if (querypoint.first > rectangle.second.first) {
+
+		dx = querypoint.first - rectangle.second.first;   //x1 - max_x
+	}
+
+
+	//calculating distance in the y-axis;
+
+
+	if (querypoint.second < rectangle.first.second) {
+
+		dy = rectangle.first.second - querypoint.second;  //miny - y1
+
+	}
+
+	// rectangle.min.y <= querypoint.y <= rectangle.max.y
+	if (querypoint.second >= rectangle.first.second && querypoint.second <= rectangle.second.second) {
+
+		dy = 0;
+	}
+
+	//querypoint.y > rectangle.max.y
+	if (querypoint.second > rectangle.second.second) {
+
+		dy = querypoint.second - rectangle.second.second;
+	}
+
+
+	double distance = sqrt(pow(dx, 2) + pow(dy, 2));
+
+	return distance;  
+
+*/
+
+		//OR A SHORTER ALGORITHM INSPIRED BY STACK OVERFLOW: https://stackoverflow.com/questions/5254838/calculating-distance-between-a-point-and-a-rectangular-box-nearest-point
+
+	std::vector<int> x_list = { rectangle.first.first - querypoint.first , 0 , querypoint.first - rectangle.second.first };
+	std::vector<int> y_list = { rectangle.first.second - querypoint.second , 0 , querypoint.second - rectangle.second.second };
+
+	dx = *std::max_element(x_list.begin(), x_list.end());
+	dy = *std::max_element(y_list.begin(), y_list.end());
+
+	double distance = sqrt(pow(dx, 2) + pow(dy, 2));
+
+	return distance;
+
+}
+
+
+
+std::vector<coordinate_t> RTree::IncNearest(coordinate_t querypoint, RTree tree, int k) {
+
+	Node* focusNode = tree.root;
+
+	double distance;
+
+	std::vector<coordinate_t> nearest_neighbor_list;		//list that contains upto k nearest neighbors of the querypoint
+	int k_count = 0;										//keep a track of the number of elements inside the nearest_neighbors_list
+
+	//push all the mbrs into the queue if the focusNode is the root
+	if (focusNode == root) {
+
+		for (int i = 0; i < focusNode->n; i++) {
+
+
+			new_knn.push( std::make_tuple(focusNode->contents[i], focusNode, calc_distance(querypoint, std::get<pair_of_coordinates_t>(focusNode->contents[i]))));
+
+		}
+
+
+		//FOR DISPLAYING PURPOSES
+
+		/*  
+		for (int i = 0; i < focusNode->n; i++) {
+
+			std::cout << std::get<pair_of_coordinates_t>(std::get<0>(new_knn.top())).first.first <<",";
+			std::cout << std::get<pair_of_coordinates_t>(std::get<0>(new_knn.top())).first.second<<std::endl;
+			
+			std::cout << "distance: " << std::get<2>(new_knn.top())<<std::endl;
+		}
+		*/
+	}
+
+	//save the element that is on the top of the queue
+	std::tuple < std::variant<coordinate_t, pair_of_coordinates_t>, Node*, double > current_top_element = new_knn.top();
+
+	while (!new_knn.empty()) {
+
+		//check if the current element at the top of the priority queue is an MBR
+		if (!std::get<1>(current_top_element)->check_leaf()) {
+
+			new_knn.pop();
+
+			//find the index of the element that is at the top of the priority queue. We will use this to traverse into this element's (MBR is the element in this case) child
+			auto top_index = std::find(std::get<1>(current_top_element)->contents.begin(), std::get<1>(current_top_element)->contents.end(), std::get<0>(current_top_element)) - std::get<1>(current_top_element)->contents.begin();
+
+			//std::cout << "The index of value passed is " << top_index << std::endl;
+
+			focusNode = std::get<1>(current_top_element)->children[top_index];   //need the index to know that we're checking the top element's child node
+
+			
+
+
+			//pushes elements to the new_knn priority queue along with the node that their in and their distances to the querypoint
+			push_elements_to_queue(focusNode, querypoint);
+
+			current_top_element = new_knn.top();    //set the current_top_element variable to hold the updated top after pushing the previous top element's child node's contents into the queue
+
+		}
+
+
+		//the top of the queue now contains a datapoint
+		else {
+
+				//the top of the priority queue will always contain that element which has the least distance to the querypoint. so we simply push that element into the nearest neighbors list
+			nearest_neighbor_list.push_back(std::get<coordinate_t>(std::get<0>(new_knn.top())));
+
+			
+			k_count++;		//increase k_count to match the number of elements in the nearest neighbors list
+
+
+			// FOR DISPLAYING PURPOSES : uncomment if you wish to see the exact distances of the datapoints to the trees.
+			/*
+			
+			std::cout << "nearest neighbor distance: " << std::get<2>(new_knn.top()) << std::endl;
+
+
+			std::cout << "neares neighbor is: " << std::get<coordinate_t>(std::get<0>(new_knn.top())).first << "," << std::get<coordinate_t>(std::get<0>(new_knn.top())).second << std::endl;
+			*/
+	
+
+			//if the nearest neighbors list contains the same number of elements as k, return the list and break out of the loop.
+			if (k_count == k) { 
+				
+				return nearest_neighbor_list;
+				break; }
+			
+
+			//pop the top element off and restart the loop
+			new_knn.pop();
+			current_top_element = new_knn.top();
+			
+			
+		}
+	}
+
+}
+	
+//pushes elements to the new_knn priority queue along with the node that their in and their distances to the querypoint
+
+      void RTree::push_elements_to_queue(Node* focusNode, coordinate_t querypoint) {
+
+		  //if it is a data node
+		  if (focusNode->check_leaf()) {
+
+
+			  for (int i = 0; i < focusNode->n; i++) {
+
+				  new_knn.push(std::make_tuple(focusNode->contents[i], focusNode, calc_distance(querypoint, std::get<coordinate_t>(focusNode->contents[i]))));
+
+			  }
+		  }
+
+		  //if it is an MBR node
+
+		  else {
+
+			  for (int i = 0; i < focusNode->n; i++) {
+
+				  new_knn.push(std::make_tuple(focusNode->contents[i], focusNode, calc_distance(querypoint, std::get<pair_of_coordinates_t>(focusNode->contents[i]))));
+
+			  }
+
+		  }
+
+
+}

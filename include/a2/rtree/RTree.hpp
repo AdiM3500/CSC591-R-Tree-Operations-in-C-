@@ -7,6 +7,8 @@
 #include <vector>
 #include <array>
 #include <variant>
+#include <queue>
+#include <tuple>
 
 
 using coordinate_t = std::pair< int, int >;
@@ -68,6 +70,28 @@ public:
 	datapoint_list_t listOfDataPoints{};							//set as empty initially. Used to contain datapoints that overlap a search-rectangle. Primarily used in the find function (for range search) and in the rangeTraversal function.
 	
 
+
+	//comperator for the priority queue
+	template <typename T>
+	struct new_min_dist {
+
+
+		bool operator() (T a, T b) const {
+
+			return std::get<2>(a) > std::get<2>(b);
+		}
+	};
+
+
+
+
+
+
+	//1st element in the tuple is either an mbr or a datapoint, 2nd element is the node that the first element is present in, and 3rd element is the distance of the 1st element from the querypoint
+	std::priority_queue< std::tuple < std::variant<coordinate_t, pair_of_coordinates_t>, Node*, double >, std::vector < std::tuple < std::variant<coordinate_t, pair_of_coordinates_t>, Node*, double > >, new_min_dist < std::tuple < std::variant<coordinate_t, pair_of_coordinates_t>, Node*, double > >   > new_knn;
+
+   
+
 	/**
 	 * Returns a list of all datapoints that overlap a search rectangle
 	 */
@@ -93,5 +117,13 @@ public:
 	void rangeTraversal(Node* focusNode, pair_of_coordinates_t search_rectangle);
 
 	bool operator == (RTree other) const;
+
+	double calc_distance(coordinate_t querypoint, pair_of_coordinates_t rectangle); //calculate the distance between a querypoint and a rectangle 
+
+	double calc_distance(coordinate_t querypoint, coordinate_t datapoint);		//calculate the distance between a querypoint and a datapoint
+
+	std::vector<coordinate_t> IncNearest(coordinate_t querypoint, RTree tree, int k);  //function that returns the k nearest neighbors of a querypoint in the r-tree
+
+	void push_elements_to_queue(Node* focusNode, coordinate_t querypoint );		//function to push the contents of a focusNode(whether it be an MBR or a querypoint), the distances of the contents to the querypoint, etc. into the priority queue.
 
 };
