@@ -4,6 +4,7 @@ add_executable(
     rtree/rtree-lookup-tests.cpp
     rtree/rtree-range-tests.cpp
     rtree/rtree-tests.cpp
+    rtree/rtree-knn-tests.cpp
 
 
  
