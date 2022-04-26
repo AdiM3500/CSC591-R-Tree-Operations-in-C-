@@ -3,7 +3,7 @@
 #include <optional>
 
 
-SCENARIO("We search for nearest neighbors in an r-tree of height 1")
+SCENARIO("We search for nearest neighbors in an r-tree of height 1", "[rtree][knn]")
 {
 	GIVEN("An r-tree with one full datanode ")
 	{
@@ -78,7 +78,7 @@ SCENARIO("We search for nearest neighbors in an r-tree of height 1")
 }
 
 
-SCENARIO("We do a nearest neighbor lookup on an r-tree of height 3")
+SCENARIO("We do a nearest neighbor lookup on an r-tree of height 3", "[rtree][knn]")
 {
 	GIVEN("The usual r-tree of height 3")
 	{
@@ -171,7 +171,7 @@ SCENARIO("We do a nearest neighbor lookup on an r-tree of height 3")
 }
 
 
-SCENARIO("We do a nearest neighbor lookup for a querypoint where the nearest neighbors are all located in different mbrs")
+SCENARIO("We do a nearest neighbor lookup for a querypoint where the nearest neighbors are all located in different mbrs", "[rtree][knn]")
 {
 	GIVEN("An r-tree of height 2")
 	{
@@ -205,7 +205,7 @@ SCENARIO("We do a nearest neighbor lookup for a querypoint where the nearest nei
 }
 
 
-SCENARIO("We do a nearest neigbor lookup for a qurypoint that is equidistant from two mbrs")
+SCENARIO("We do a nearest neigbor lookup for a qurypoint that is equidistant from two mbrs", "[rtree][knn]")
 {
 	GIVEN("An r-tree of height 2")
 	{
@@ -237,7 +237,7 @@ SCENARIO("We do a nearest neigbor lookup for a qurypoint that is equidistant fro
 
 //case 10:
 
-SCENARIO("We do a nearest neighbor lookup for a querypoint in an r-tree where all mbrs overlap each other")
+SCENARIO("We do a nearest neighbor lookup for a querypoint in an r-tree where all mbrs overlap each other", "[rtree][knn]")
 {
 
 	GIVEN("A tree of height 2 where all mbrs overlap")
